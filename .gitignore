@@ -1,0 +1,6 @@
+.venv
+checkpoints
+kaggle_testing
+__pycache__
+edge_ai_traffic_sign.onnx
+edge_ai_traffic_sign.onnx.data
