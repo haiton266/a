@@ -15,18 +15,23 @@ Workflow:
 """
 
 import os
+import sys
+
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
 import pytorch_lightning as pl
-from module import TrafficSignLightningModel
-from data import get_dataloaders
+from src.training.lightning_module import TrafficSignLightningModel
+from src.data.dataset import get_dataloaders
 
 NUM_CLASSES = 10
 BATCH_SIZE = 32
 
 def val():
-    print("Loading validation dataset from kaggle_testing/...")
-    _, val_loader, _ = get_dataloaders(batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
+    print("Loading validation dataset from data/...")
+    _, val_loader, _ = get_dataloaders(base_dir="data", batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
     
-    checkpoint_path = 'checkpoints/best_edge_model.ckpt'
+    checkpoint_path = 'models/checkpoints/best_edge_model.ckpt'
     if not os.path.exists(checkpoint_path):
         print(f"Error: Checkpoint {checkpoint_path} not found. Please train the model first.")
         return

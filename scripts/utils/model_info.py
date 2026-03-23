@@ -15,8 +15,13 @@ Feature:
 """
 
 import os
+import sys
 import torch
-from model import EdgeTrafficSignCNN
+
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from src.models.traffic_sign_cnn import EdgeTrafficSignCNN
 
 def get_model_info():
     # Instantiate the model

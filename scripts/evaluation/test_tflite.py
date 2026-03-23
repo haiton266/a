@@ -23,9 +23,9 @@ import pandas as pd
 
 def test_tflite():
     # Configuration
-    model_path = "tflite_models/lenet5_float32.tflite"
-    test_dir = "kaggle_testing/test"
-    output_csv = "submission2.csv"
+    model_path = "models/exports/tflite_models/lenet5_float32.tflite"
+    test_dir = "data/test"
+    output_csv = "results/submission_tflite.csv"
     
     if not os.path.exists(model_path):
         print(f"Error: Model file {model_path} not found.")
@@ -98,7 +98,7 @@ def test_tflite():
     submission_df = pd.DataFrame({'Id': ids, 'Prediction': preds})
     
     # Read the sample submission to maintain order and format
-    sample_sub_path = os.path.join('kaggle_testing', 'sample_submission.csv')
+    sample_sub_path = os.path.join('data', 'sample_submission.csv')
     if os.path.exists(sample_sub_path):
         print("Formatting submission based on sample_submission.csv...")
         sample_sub = pd.read_csv(sample_sub_path, dtype={'Id': str})

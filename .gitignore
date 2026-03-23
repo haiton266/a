@@ -1,6 +1,18 @@
-.venv
-checkpoints
-kaggle_testing
-__pycache__
-edge_ai_traffic_sign.onnx
-edge_ai_traffic_sign.onnx.data
+.venv/
+__pycache__/
+*.pyc
+
+# Data and Assets
+data/
+assets/
+results/
+
+# Models and Checkpoints
+models/checkpoints/
+models/checkpoints_tf/
+models/exports/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

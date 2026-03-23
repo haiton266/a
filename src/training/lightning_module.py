@@ -18,7 +18,7 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 import torchvision.transforms.v2 as transforms
-from model import EdgeTrafficSignCNN
+from src.models.traffic_sign_cnn import EdgeTrafficSignCNN
 
 class TrafficSignLightningModel(pl.LightningModule):
     def __init__(self, num_classes=10, learning_rate=1e-3):

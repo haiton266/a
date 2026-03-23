@@ -14,24 +14,29 @@ Workflow:
 """
 
 import os
+import sys
 import torch
 import pandas as pd
 import pytorch_lightning as pl
-from module import TrafficSignLightningModel
-from data import get_dataloaders
+
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from src.training.lightning_module import TrafficSignLightningModel
+from src.data.dataset import get_dataloaders
 
 NUM_CLASSES = 10
 BATCH_SIZE = 32
 
 def test():
-    print("Loading test dataset from kaggle_testing/...")
-    _, _, test_loader = get_dataloaders(batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
+    print("Loading test dataset from data/...")
+    _, _, test_loader = get_dataloaders(base_dir="data", batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
     
     if test_loader is None or len(test_loader) == 0:
-        print("Error: Test loader is empty. Check if kaggle_testing/test contains images.")
+        print("Error: Test loader is empty. Check if data/test contains images.")
         return
 
-    checkpoint_path = 'checkpoints/best_edge_model.ckpt'
+    checkpoint_path = 'models/checkpoints/best_edge_model.ckpt'
     if not os.path.exists(checkpoint_path):
         print(f"Error: Checkpoint {checkpoint_path} not found. Please train the model first.")
         return
@@ -57,7 +62,7 @@ def test():
     submission_df = pd.DataFrame({'Id': ids, 'Prediction': preds})
     
     # Read the sample submission to maintain order and format
-    sample_sub_path = os.path.join('kaggle_testing', 'sample_submission.csv')
+    sample_sub_path = os.path.join('data', 'sample_submission.csv')
     if os.path.exists(sample_sub_path):
         sample_sub = pd.read_csv(sample_sub_path, dtype={'Id': str})
         submission_df['Id'] = submission_df['Id'].astype(str)
@@ -70,7 +75,7 @@ def test():
         final_sub['Label'] = final_sub['Prediction'].fillna(0).astype(int)
         final_sub = final_sub.drop(columns=['Prediction'])
         
-        output_csv = "submission.csv"
+        output_csv = "results/submission.csv"
         final_sub.to_csv(output_csv, index=False)
         print(f"\nGenerated predictions for {len(preds)} test images.")
         print(f"Saved submission formatted based on sample_submission.csv to {output_csv}")
@@ -78,7 +83,7 @@ def test():
         # Fallback if sample_submission.csv doesn't exist
         print(f"Warning: {sample_sub_path} not found. Generating a basic submission CSV.")
         submission_df = submission_df.rename(columns={'Prediction': 'Label'})
-        output_csv = "submission.csv"
+        output_csv = "results/submission.csv"
         submission_df.to_csv(output_csv, index=False)
         print(f"\nGenerated predictions for {len(preds)} test images.")
         print(f"Saved submission to {output_csv}")

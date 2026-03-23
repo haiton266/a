@@ -40,9 +40,50 @@ uv run py/python main.py
 ```
 
 ### What `main.py` Does:
-1. **Loads Data:** Loads the traffic sign images from the local `kaggle_testing/` dataset directory.
-2. **Builds the Model:** Instantiates a lightweight Separable CNN + Global Average Pooling model optimized for edge devices (<200k parameters).
-3. **Trains:** Runs PyTorch Lightning training with early stopping and checkpointing. 
-4. **Evaluates:** Runs inference on the test set.
-5. **Exports:** Converts the best performing model checkpoint into an ONNX payload (`edge_ai_traffic_sign.onnx`).
-6. **Reports:** Prints an edge deployment footprint summary calculating model payload constraints.
+1.  **Loads Data:** Reads the traffic sign dataset from the `data/` directory.
+2.  **Builds the Model:** Instantiates a lightweight Separable CNN + Global Average Pooling architecture optimized for ESP32-S3 (<200k parameters).
+3.  **Trains:** Runs PyTorch Lightning training with early stopping and automatic checkpointing to `models/checkpoints/`.
+4.  **Evaluates:** Performs inference on the test set if available.
+5.  **Exports:** Automatically converts the best model checkpoint into an ONNX payload at `models/exports/edge_ai_traffic_sign.onnx`.
+6.  **Reports:** Prints the final model footprint (parameter count and ONNX size).
+
+## Project Structure
+
+```text
+pioneer/
+├── src/                    # Core source code
+│   ├── models/             # Model architectures (traffic_sign_cnn.py)
+│   ├── data/               # Data loading and preprocessing (dataset.py)
+│   └── training/           # Training modules and logic (lightning_module.py)
+├── scripts/                # Executable scripts
+│   ├── training/           # Training scripts (PyTorch and TensorFlow)
+│   ├── evaluation/         # Evaluation, testing, and TFLite benchmarks
+│   ├── export/             # Model export and conversion (ONNX, TFLite)
+│   └── utils/              # Utility scripts (model_info.py)
+├── models/                 # Storage for model checkpoints and exports
+│   ├── checkpoints/        # PyTorch .ckpt files
+│   ├── checkpoints_tf/     # TensorFlow .keras files
+│   └── exports/            # Final ONNX and TFLite models
+├── data/                   # Dataset directory (train/test/sample_submission.csv)
+├── results/                # Output directory for submission CSVs
+├── assets/                 # Project assets (images, documentation)
+├── requirements.txt        # Python dependencies
+└── README.md               # Project overview
+```
+
+## Advanced Usage (Scripts)
+
+You can run specialized scripts for individual tasks:
+
+- **Training:**
+  - `python scripts/training/train_pytorch.py`: Standalone PyTorch training.
+  - `python scripts/training/train_tensorflow.py`: LeNet-5 training in TensorFlow.
+- **Evaluation:**
+  - `python scripts/evaluation/val_pytorch.py`: Evaluate PyTorch checkpoint on validation set.
+  - `python scripts/evaluation/test_pytorch.py`: Generate Kaggle submission from PyTorch model.
+  - `python scripts/evaluation/test_tflite_int8.py`: Benchmark INT8 quantized TFLite inference.
+- **Export:**
+  - `python scripts/export/onnx_to_tflite.py`: Multi-stage conversion (PT -> ONNX -> TF -> TFLite).
+  - `python scripts/export/keras_to_tflite.py`: Convert Keras model to TFLite (Float32 & INT8).
+- **Utility:**
+  - `python scripts/utils/model_info.py`: Detailed architecture and parameter analysis.

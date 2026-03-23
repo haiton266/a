@@ -16,9 +16,14 @@ Workflow:
 
 import torch
 import os
-from module import TrafficSignLightningModel
+import sys
 
-def export_to_onnx(model, input_shape, export_path="edge_ai_traffic_sign.onnx"):
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from src.training.lightning_module import TrafficSignLightningModel
+
+def export_to_onnx(model, input_shape, export_path="models/exports/edge_ai_traffic_sign.onnx"):
     """
     Exports the PyTorch model to ONNX.
     For ESP32-S3, one can then convert ONNX -> TensorFlow -> TFLite (INT8).
@@ -41,7 +46,7 @@ def export_to_onnx(model, input_shape, export_path="edge_ai_traffic_sign.onnx"):
 
 def main():
     INPUT_SHAPE = (3, 32, 32)
-    checkpoint_path = 'checkpoints/best_edge_model.ckpt'
+    checkpoint_path = 'models/checkpoints/best_edge_model.ckpt'
     
     print("\nStarting Inference Model Export...")
     if os.path.exists(checkpoint_path):
@@ -51,7 +56,7 @@ def main():
         print(f"Checkpoint not found at {checkpoint_path}, using uninitialized model.")
         best_model = TrafficSignLightningModel(num_classes=10)
         
-    onnx_path = export_to_onnx(best_model.model, INPUT_SHAPE, export_path="edge_ai_traffic_sign.onnx")
+    onnx_path = export_to_onnx(best_model.model, INPUT_SHAPE, export_path="models/exports/edge_ai_traffic_sign.onnx")
     
     param_count = sum(p.numel() for p in best_model.parameters() if p.requires_grad)
     

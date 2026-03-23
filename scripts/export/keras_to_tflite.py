@@ -20,13 +20,13 @@ import os
 import numpy as np
 
 # --- Paths ---
-KERAS_MODEL_PATH = "checkpoints_tf/best_lenet5_model.keras"
-TFLITE_OUTPUT_DIR = "tflite_models"
+KERAS_MODEL_PATH = "models/checkpoints_tf/best_lenet5_model.keras"
+TFLITE_OUTPUT_DIR = "models/exports/tflite_models"
 TFLITE_FLOAT_PATH = os.path.join(TFLITE_OUTPUT_DIR, "lenet5_float32.tflite")
 TFLITE_QUANT_PATH = os.path.join(TFLITE_OUTPUT_DIR, "lenet5_int8_quant.tflite")
 
 # --- Data config (used for quantization calibration) ---
-DATA_DIR = "kaggle_testing/train"
+DATA_DIR = "data/train"
 IMAGE_SIZE = (32, 32)
 BATCH_SIZE = 32
 NUM_CALIB_BATCHES = 10  # Number of batches used for post-training quantization calibration

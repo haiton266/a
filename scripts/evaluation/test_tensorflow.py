@@ -14,13 +14,18 @@ Workflow:
 """
 
 import os
+import sys
 import tensorflow as tf
 import pandas as pd
 import numpy as np
 from tensorflow.keras import models, layers
-from train_tf import get_lenet5, NUM_CLASSES, BATCH_SIZE
 
-def load_test_images(test_dir="kaggle_testing/test", image_size=(32, 32)):
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from scripts.training.train_tensorflow import get_lenet5, NUM_CLASSES, BATCH_SIZE
+
+def load_test_images(test_dir="data/test", image_size=(32, 32)):
     image_files = [f for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     images = []
     ids = []
@@ -42,11 +47,11 @@ def load_test_images(test_dir="kaggle_testing/test", image_size=(32, 32)):
     return images, ids
 
 def test():
-    print("Loading test dataset from kaggle_testing/test...")
-    test_dir = "kaggle_testing/test"
+    print("Loading test dataset from data/test...")
+    test_dir = "data/test"
     
     if not os.path.exists(test_dir):
-        print(f"Error: {test_dir} not found. Check if kaggle_testing/test contains images.")
+        print(f"Error: {test_dir} not found. Check if data/test contains images.")
         return
 
     images, ids = load_test_images(test_dir=test_dir)
@@ -55,7 +60,7 @@ def test():
         print("No test images found.")
         return
 
-    checkpoint_path = 'checkpoints_tf/best_lenet5_model.keras'
+    checkpoint_path = 'models/checkpoints_tf/best_lenet5_model.keras'
     if not os.path.exists(checkpoint_path):
         print(f"Error: {checkpoint_path} not found. Please train the model first.")
         return
@@ -70,8 +75,8 @@ def test():
     # Generate submission CSV logic to match sample submission order
     submission_df = pd.DataFrame({'Id': ids, 'Prediction': preds})
     
-    sample_sub_path = os.path.join('kaggle_testing', 'sample_submission.csv')
-    output_csv = "submission_tf.csv"
+    sample_sub_path = os.path.join('data', 'sample_submission.csv')
+    output_csv = "results/submission_tf.csv"
     
     if os.path.exists(sample_sub_path):
         sample_sub = pd.read_csv(sample_sub_path, dtype={'Id': str})

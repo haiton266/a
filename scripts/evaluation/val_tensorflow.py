@@ -16,17 +16,22 @@ Workflow:
 import tensorflow as tf
 from tensorflow.keras import models, layers
 import os
-from train_tf import get_lenet5, load_data, BATCH_SIZE, NUM_CLASSES
+import sys
+
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from scripts.training.train_tensorflow import get_lenet5, load_data, BATCH_SIZE, NUM_CLASSES
 
 def val():
     print("Loading data for TensorFlow Validation...")
-    _, val_ds = load_data(batch_size=BATCH_SIZE)
+    _, val_ds = load_data(base_dir="data", batch_size=BATCH_SIZE)
     
     if val_ds is None:
         print("Dataset not found. Exiting.")
         return
 
-    checkpoint_path = 'checkpoints_tf/best_lenet5_model.keras'
+    checkpoint_path = 'models/checkpoints_tf/best_lenet5_model.keras'
     if not os.path.exists(checkpoint_path):
         print(f"Error: {checkpoint_path} not found. Please train the model first.")
         return

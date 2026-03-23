@@ -15,10 +15,15 @@ Workflow:
 """
 
 import os
+import sys
+
+# Path adjustment for src imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-from module import TrafficSignLightningModel
-from data import get_dataloaders
+from src.training.lightning_module import TrafficSignLightningModel
+from src.data.dataset import get_dataloaders
 
 INPUT_SHAPE = (3, 32, 32)
 NUM_CLASSES = 10
@@ -26,8 +31,8 @@ BATCH_SIZE = 32
 EPOCHS = 50
 
 def train():
-    print("Loading dataset from kaggle_testing/...")
-    train_loader, val_loader, _ = get_dataloaders(batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
+    print("Loading dataset from data/...")
+    train_loader, val_loader, _ = get_dataloaders(base_dir="data", batch_size=BATCH_SIZE, num_classes=NUM_CLASSES)
     
     # --- Build Lightning Model ---
     model = TrafficSignLightningModel(num_classes=NUM_CLASSES)
@@ -39,7 +44,7 @@ def train():
         mode='min'
     )
     checkpoint_callback = ModelCheckpoint(
-        dirpath='checkpoints',
+        dirpath='models/checkpoints',
         filename='best_edge_model',
         monitor='val_acc',
         mode='max',

@@ -54,7 +54,7 @@ def get_lenet5(num_classes=10):
     ])
     return model
 
-def load_data(base_dir="kaggle_testing", batch_size=32):
+def load_data(base_dir="data", batch_size=32):
     train_dir = os.path.join(base_dir, "train")
 
     if not os.path.exists(train_dir):
@@ -126,7 +126,7 @@ def train():
     model.summary()
 
     # --- Callbacks ---
-    checkpoint_dir = 'checkpoints_tf'
+    checkpoint_dir = 'models/checkpoints_tf'
     os.makedirs(checkpoint_dir, exist_ok=True)
 
     early_stop = callbacks.EarlyStopping(monitor='val_loss', patience=200, restore_best_weights=True)
